@@ -98,7 +98,7 @@ class OicSession < ActiveRecord::Base
 
   def self.parse_token(token)
     jwt = token.split('.')
-    return JSON::parse(Base64::decode64(jwt[1]))
+    return JSON::parse(Base64::urlsafe_decode64(jwt[1]))
   end
 
   def claims
@@ -175,9 +175,9 @@ class OicSession < ActiveRecord::Base
 
   def user
     if access_token? # keycloak way...
-      @user = JSON::parse(Base64::decode64(access_token.split('.')[1]))
+      @user = JSON::parse(Base64::urlsafe_decode64(access_token.split('.')[1]))
     else
-      @user = JSON::parse(Base64::decode64(id_token.split('.')[1]))
+      @user = JSON::parse(Base64::urlsafe_decode64(id_token.split('.')[1]))
     end
     return @user
   end
