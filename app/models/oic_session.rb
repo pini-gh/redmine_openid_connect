@@ -175,10 +175,13 @@ class OicSession < ActiveRecord::Base
 
   def user
     if access_token? # keycloak way...
-      @user = JSON::parse(Base64::urlsafe_decode64(access_token.split('.')[1]))
-    else
-      @user = JSON::parse(Base64::urlsafe_decode64(id_token.split('.')[1]))
+      begin
+        @user = JSON::parse(Base64::urlsafe_decode64(access_token.split('.')[1]))
+        return @user
+      rescue NoMethodError
+      end
     end
+    @user = JSON::parse(Base64::urlsafe_decode64(id_token.split('.')[1]))
     return @user
   end
 
